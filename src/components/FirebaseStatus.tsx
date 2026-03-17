@@ -1,11 +1,33 @@
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
-import { firebaseConfig } from '../config/firebaseConfig';
+
+
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const FirebaseStatus = () => {
-  const isNotConfigured = !firebaseConfig.apiKey || 
-                          firebaseConfig.apiKey === "" || 
-                          firebaseConfig.apiKey === "COLOQUE_SUA_API_KEY_AQUI";
+  const [isNotConfigured, setIsNotConfigured] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        // A simple read operation to a non-existent document to check connection
+        const docRef = doc(db, 'test-connection', 'test');
+        await getDoc(docRef);
+      } catch (error: any) {
+        if (error.code === 'permission-denied' || error.message.includes('Missing or insufficient permissions')) {
+          // This is expected if rules are set up correctly and the doc doesn't exist.
+          // It still confirms a connection.
+          setIsNotConfigured(false);
+        } else {
+          console.error("Firebase connection failed:", error);
+          setIsNotConfigured(true);
+        }
+      }
+    };
+
+    checkConnection();
+  }, []);
 
   if (!isNotConfigured) return null;
 

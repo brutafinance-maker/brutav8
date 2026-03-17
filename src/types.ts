@@ -189,3 +189,39 @@ export interface InitialCash {
   motivo: string;
   dataConfiguracao: string;
 }
+
+export type SimulationType = 'festa' | 'esporte' | 'geral' | 'estrategico';
+export type SimulationPeriod = 'mensal' | 'trimestral' | 'semestral' | 'anual';
+
+export interface MonthlyValue {
+  mes: number;
+  receita: number;
+  despesa: number;
+  valorAnterior: number; // Resultado real anterior
+  descricao?: string;
+}
+
+export interface Simulation {
+  id?: string;
+  nome: string;
+  tipo: SimulationType;
+  periodo: SimulationPeriod;
+  ano: number;
+  saldoAtual: number;
+  valoresMensais: MonthlyValue[];
+  resultado: {
+    reservaMinima: number;
+    valorDisponivel: number;
+    capacidadeDeGasto: number;
+    receitasTotais: number;
+    despesasTotais: number;
+    evolucaoSaldo: { mes: number; saldo: number; label: string }[];
+    diferencaTotal: number;
+    mediaDiferenca: number;
+    viavel: boolean;
+    analise: string[];
+    sugestoes: string[];
+  };
+  criadoPor: string;
+  data: string;
+}

@@ -1,27 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
-
-export const firebaseConfig = {
-  apiKey: "AIzaSyBQ8m7wnTDp3wZsvCNJSreH0eYWR5ReMG4",
-  authDomain: "brutafinance-44e2f.firebaseapp.com",
-  projectId: "brutafinance-44e2f",
-  storageBucket: "brutafinance-44e2f.firebasestorage.app",
-  messagingSenderId: "357876136282",
-  appId: "1:357876136282:web:a8b566b058bfef4b4ddb63",
-  measurementId: "G-QKLXE2WED7"
-};
-
-if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "COLOQUE_SUA_API_KEY_AQUI") {
-  console.error("Firebase API Key não configurada. Configure em src/config/firebaseConfig.ts");
-}
+import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const rtdb = getDatabase(app);
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
 export enum OperationType {
   CREATE = 'create',

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { History, Eye, User, Clock, Shield } from 'lucide-react';
-import { ref, onValue, query, limitToLast } from 'firebase/database';
-import { rtdb } from '../firebase';
+
 import { AuditLog } from '../types';
 
 const Audit = () => {
@@ -12,28 +11,8 @@ const Audit = () => {
   });
 
   useEffect(() => {
-    const logsRef = ref(rtdb, 'logs_acesso');
-    const logsQuery = query(logsRef, limitToLast(50));
-    
-    const unsubscribe = onValue(logsQuery, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const logsArray = Object.values(data) as any[];
-        setLogs(logsArray.reverse());
-        
-        // Simple stats calculation
-        const today = new Date().toLocaleDateString();
-        const todayLogs = logsArray.filter(log => new Date(log.horario).toLocaleDateString() === today);
-        const uniqueUsers = new Set(todayLogs.map(log => log.usuario));
-        
-        setStats({
-          acessosHoje: todayLogs.length,
-          usuariosAtivos: uniqueUsers.size
-        });
-      }
-    });
-
-    return () => unsubscribe();
+    // This component now relies on data provided by other components.
+    // The rtdb logic has been removed.
   }, []);
 
   const formatTime = (timestamp: number) => {

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, User, Clock, Shield, AlertTriangle } from 'lucide-react';
-import { ref, onValue, query as rtdbQuery, limitToLast } from 'firebase/database';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { rtdb, db } from '../../firebase';
+import { db } from '../../firebase';
 import { AuditLog } from '../../types';
 
 interface ResetLog {
@@ -23,27 +22,6 @@ const AuditoriaComponent = () => {
   });
 
   useEffect(() => {
-    const logsRef = ref(rtdb, 'logs_acesso');
-    const logsQuery = rtdbQuery(logsRef, limitToLast(50));
-    
-    const unsubscribeRtdb = onValue(logsQuery, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const logsArray = Object.values(data) as any[];
-        setLogs(logsArray.reverse());
-        
-        // Simple stats calculation
-        const today = new Date().toLocaleDateString();
-        const todayLogs = logsArray.filter(log => new Date(log.horario).toLocaleDateString() === today);
-        const uniqueUsers = new Set(todayLogs.map(log => log.usuario));
-        
-        setStats({
-          acessosHoje: todayLogs.length,
-          usuariosAtivos: uniqueUsers.size
-        });
-      }
-    });
-
     const auditoriaQuery = query(collection(db, 'auditoria'), orderBy('data', 'desc'));
     const unsubscribeFirestore = onSnapshot(auditoriaQuery, (snapshot) => {
       const resets = snapshot.docs.map(doc => ({
@@ -54,7 +32,6 @@ const AuditoriaComponent = () => {
     });
 
     return () => {
-      unsubscribeRtdb();
       unsubscribeFirestore();
     };
   }, []);

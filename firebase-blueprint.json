@@ -169,6 +169,23 @@
         "dataConfiguracao": { "type": "string", "format": "date-time" }
       },
       "required": ["saldoInicial"]
+    },
+    "Simulation": {
+      "title": "Simulation",
+      "description": "Simulação financeira estratégica",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "tipo": { "type": "string", "enum": ["festa", "esporte", "geral", "estrategico"] },
+        "periodo": { "type": "string", "enum": ["mensal", "trimestral", "semestral", "anual"] },
+        "ano": { "type": "number" },
+        "saldoAtual": { "type": "number" },
+        "valoresMensais": { "type": "array", "items": { "type": "object" } },
+        "resultado": { "type": "object" },
+        "criadoPor": { "type": "string" },
+        "data": { "type": "string", "format": "date-time" }
+      },
+      "required": ["nome", "tipo", "periodo", "saldoAtual", "valoresMensais", "resultado", "criadoPor", "data"]
     }
   },
   "firestore": {
@@ -203,6 +220,10 @@
     "/configuracoes/geral": {
       "schema": "AppSettings",
       "description": "Configurações globais"
+    },
+    "/simulacoes/{simulationId}": {
+      "schema": "Simulation",
+      "description": "Simulações financeiras salvas"
     }
   }
 }
